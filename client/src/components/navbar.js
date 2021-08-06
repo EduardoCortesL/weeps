@@ -1,89 +1,43 @@
+import React from "react";
 
-import React, { Component } from "react";
-// This will require to npm install axios
-import axios from 'axios';
-import { Link } from "react-router-dom";
+// We import bootstrap to make our application look better.
+import "bootstrap/dist/css/bootstrap.css";
 
-const Record = (props) => (
-  <tr>
-    <td>{props.record.person_name}</td>
-    <td>{props.record.person_position}</td>
-    <td>{props.record.person_level}</td>
-    <td>
-      <Link to={"/edit/" + props.record._id}>Edit</Link> |
-      <a
-        href="/"
-        onClick={() => {
-          props.deleteRecord(props.record._id);
-        }}
-      >
-        Delete
-      </a>
-    </td>
-  </tr>
-);
+// We import NavLink to utilize the react router.
+import { NavLink } from "react-router-dom";
 
-export default class RecordList extends Component {
-  // This is the constructor that shall store our data retrieved from the database
-  constructor(props) {
-    super(props);
-    this.deleteRecord = this.deleteRecord.bind(this);
-    this.state = { records: [] };
-  }
+// Here, we display our Navbar
+const Navbar = () => {
+  return (
+    <div>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <NavLink className="navbar-brand" to="/">
+          MongoDB
+        </NavLink>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-  // This method will get the data from the database.
-  componentDidMount() {
-    axios
-      .get("http://localhost:3000/record/")
-      .then((response) => {
-        this.setState({ records: response.data });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/create">
+                Create Record
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  );
+};
 
-  // This method will delete a record based on the method
-  deleteRecord(id) {
-    axios.delete("http://localhost:3000/" + id).then((response) => {
-      console.log(response.data);
-    });
-
-    this.setState({
-      record: this.state.records.filter((el) => el._id !== id),
-    });
-  }
-
-  // This method will map out the users on the table
-  recordList() {
-    return this.state.records.map((currentrecord) => {
-      return (
-        <Record
-          record={currentrecord}
-          deleteRecord={this.deleteRecord}
-          key={currentrecord._id}
-        />
-      );
-    });
-  }
-
-  // This following section will display the table with the records of individuals.
-  render() {
-    return (
-      <div>
-        <h3>Record List</h3>
-        <table className="table table-striped" style={{ marginTop: 20 }}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Position</th>
-              <th>Level</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>{this.recordList()}</tbody>
-        </table>
-      </div>
-    );
-  }
-}
+export default Navbar;
